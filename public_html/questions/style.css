@@ -1,0 +1,18 @@
+
+.innerbody{
+  padding:5% 10%;
+}
+
+.line{
+  margin:0.7em;
+  padding:0.3em;
+  background-color:#8dc195;
+  color:#000000;
+  font-size:x-large;
+  text-align:center;
+}
+
+.line:hover{
+  background-color:#518e5a;
+  color:#ffffff;
+}

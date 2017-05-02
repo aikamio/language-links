@@ -1,0 +1,25 @@
+
+.innerbody{
+  padding:2% 5%;
+  text-align:center;
+}
+
+.formbox{
+  text-align:left;
+}
+
+.formbox span.q{
+  width:auto;
+}
+
+.formbutton:not(:hover){
+  background-color:#dd5566 !important;
+}
+
+.formbutton:hover{
+  color:#dd5566 !important;;
+}
+
+.pop.left{
+  left:10%;
+}

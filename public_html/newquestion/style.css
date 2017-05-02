@@ -1,0 +1,30 @@
+.innerbody{
+  padding:2% 5%;
+  text-align:center;
+}
+
+.formbox{
+}
+
+.formbox textarea{
+  width:50vw;
+  height:6em;
+  padding:0.5em;
+  font-size:xx-large;
+}
+
+.q{
+  text-align:left;
+}
+
+.formbutton:not(:hover){
+  background-color:#dd5566 !important;
+}
+
+.formbutton:hover{
+  color:#dd5566 !important;;
+}
+
+.pop.left{
+  left:10%;
+}

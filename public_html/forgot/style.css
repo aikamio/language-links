@@ -1,0 +1,21 @@
+
+.innerbody{
+  padding:2% 5%;
+  text-align:center;
+}
+
+.formbox span.q{
+  width:auto;
+}
+
+#submit:not(:hover){
+  background-color:#dd5566;
+}
+
+#submit:hover{
+  color:#dd5566;
+}
+
+.pop.left{
+  left:20%;
+}

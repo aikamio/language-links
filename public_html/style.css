@@ -1,0 +1,36 @@
+
+.innerbody{
+  padding:2% 10%;
+}
+
+.box{
+  color:#ffffff;
+}
+
+#today{
+  background-color:#559946;
+  font-size:40px;
+}
+
+#mail{
+  background-color:#56aacc;
+}
+
+#user{
+  background-color:#ff6677;
+  font-size:36px;
+}
+
+#questions{
+  background-color:#996644;
+  font-size:22px;
+}
+
+#newquestion{
+  background-color:#7766bb;
+  font-size:24px;
+}
+
+.pop.left{
+  display:none;
+}

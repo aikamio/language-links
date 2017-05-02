@@ -1,0 +1,223 @@
+
+/*---- スタイルのリセット ----*/
+
+body{
+  margin:0;
+}
+
+/*---- ふんわりレイアウトとポップボタン ----*/
+/* コンテンツの高さが低いときはポップボタンの位置が変わる */
+
+.fluffywrapper{
+  position:relative;
+  max-height:100%;
+}
+
+.fluffyinner{
+  width:100%;
+  max-height:100%;
+  overflow-y:auto;
+}
+
+.innerbody{
+  margin-bottom:40px;
+}
+
+.pop{
+  position:absolute;
+  bottom:0;
+}
+
+.pop.left{
+  left:40px;
+}
+
+.pop.right{
+  right:80px;
+  bottom:20px;
+}
+
+/*---- ポップボタンのデザイン ----*/
+
+.cutebutton{
+  display:inline-block;
+  border:1px solid transparent;
+}
+
+.cutebutton:hover{
+  background-color:rgba(230,150,140,0.2);
+  border-color:#ec958c;
+}
+
+.circlebutton{
+  display:inline-block;
+  position:relative;
+  width:100px;
+  height:100px;
+  border-radius:50px;
+  background-color:rgba(177, 214, 122,0.5);
+}
+
+.circlebutton>*{
+  position:absolute;
+  width:60px;
+  height:60px;
+  top:20px;
+  right:20px;
+}
+
+.circlebutton:hover{
+  background-color:rgba(177, 214, 122,1);
+}
+
+/*---- 見出し ----*/
+
+h2:before{
+  content:"■";
+}
+
+/*---- 積み木レイアウト ----*/
+
+.box_wrap{
+  display:flex;
+}
+
+.box_wrap.col{
+  flex-direction:column;
+}
+
+.box{
+  margin:1.5vw 0.7vw;
+  padding:5%;
+  text-align:center;
+  flex-grow:1;
+}
+
+.box.image{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.box.image>*{
+  max-width:100%;
+}
+
+/*---- エラーなどアナウンス ----*/
+
+.announce{
+  padding:0 5%;
+  border:2px solid black;
+  text-align:left;
+}
+
+.announce.error{
+  color:#ff0000;
+  background-color:#ffcccc;
+  border-color:#ff0000;
+}
+
+.announce.success{
+  color:#165e08;
+  background-color:#73d361;
+  border-color:#165e08;
+}
+
+/*---- フォーム ----*/
+
+.formbox{
+  position:relative;
+  display:inline-block;
+  margin:5% 0;
+  padding:3% 5%;
+  border:1px solid black;
+}
+
+.formbox .q{
+  font-weight:bold;
+  font-size:larger;
+}
+
+.formbox span.q{
+  display:inline-block;
+  width:40%;
+  margin-right:1em;
+  vertical-align:middle;
+}
+
+.formbox label{
+  display:inline-block;
+  margin-right:1em;
+}
+
+.formbox input[type="text"],
+.formbox input[type="email"],
+.formbox input[type="password"]{
+  width:10em;
+  padding:0.2em;
+  vertical-align:middle;
+  font-size:larger;
+}
+
+.formbox input[type="button"],
+.formbox input[type="submit"]{
+  margin:0.5em;
+  padding:0.2em 1em;
+  font-size:xx-large;
+  border:1px solid black;
+  border-radius:0;
+  background-color:black;
+  color:white;
+  letter-spacing:0.07em;
+  cursor:pointer;
+}
+
+.formbox input[type="button"]:hover,
+.formbox input[type="submit"]:hover{
+  background-color:white;
+  color:black;
+}
+
+.formbox .formfoot{
+  position:absolute;
+  right:0;
+  bottom:0;
+  padding:0.8em 1.2em;
+  color:blue;
+}
+
+.formbox .formfoot a{
+  display:inline-block;
+  text-decoration:underline;
+}
+
+.formbox .formfoot a:hover{
+  margin-bottom:-1px;
+}
+
+/*---- リンク ----*/
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/*---- リスト ----*/
+
+ul{
+  list-style:none;
+}
+
+.linklist li{
+  display:inline-block;
+  width:20em;
+  margin-right:1em;
+}
+
+.linklist li:before{
+  content:"・";
+}
+
+.linklist li:hover{
+  text-decoration:underline;
+}

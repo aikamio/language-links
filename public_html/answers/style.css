@@ -1,0 +1,52 @@
+
+.innerbody{
+  padding:5% 10%;
+}
+
+.box {
+  padding:1em 0;
+}
+
+.line{
+  padding:0.5em 1em;
+  border:3px solid #ffffff;
+}
+
+:nth-child(n)>.line:hover{
+  border-color:#ffffff;
+}
+
+:nth-child(2n)>.line{
+  background-color:#87c195;
+  border-color:#87c195;
+}
+
+:nth-child(2n+1)>.line{
+  background-color:#308243;
+  border-color:#308243;
+}
+
+.answer{
+  display:inline-block;
+  width:70%;
+  color:#ffffff;
+  font-size:larger;
+}
+
+.name{
+  padding-left:1em;
+  color:#cccc88;
+  font-size:smaller;
+}
+
+.line img{
+  vertical-align:middle;
+  width:1.5em;
+  height:1.5em;
+}
+
+.commend{
+  padding-left:1em;
+  display:inline;
+  color:#ffffff;
+}
