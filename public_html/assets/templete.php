@@ -36,17 +36,7 @@
       "<input type='hidden' value='$token' name='token'>".
       substr($_content, $pos + strlen(">"));
     //登録
-    $st = $pdo->prepare(
-      "INSERT INTO token(token, userid, valid, date)"
-      . " VALUES(:token, :userid, :valid, :date);");
-    $st->bindValue(':token', $token);
-    $st->bindValue(
-      ':userid',
-      isset($_USER) ? $_USER['id'] : -1,
-      PDO::PARAM_INT);
-    $st->bindValue(':valid', 1, PDO::PARAM_INT);
-    $st->bindValue(':date', date("Y-m-d H:i:s"));
-    $st->execute();
+    setToken(( isset($_USER) ? $_USER['id'] : -1 ), $token );
   }
 ?>
 <html>

@@ -10,6 +10,24 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
 
 /*---- Methods around database ----*/
 
+/* Register new user */
+function makeNewUser($name, $learn, $mother){
+  global $pdo;
+  $pdo->beginTransaction();
+  $st = $pdo->prepare(
+    "INSERT INTO user(name, learning, mothertongue)"
+    . " VALUES(:name, :learning, :mothertongue);");
+  $st->bindValue(':name', $name);
+  $st->bindValue(':learning', $learn);
+  $st->bindValue(':mothertongue', $mother, PDO::PARAM_INT);
+  $st->execute();
+  $stGet = $pdo->query("SELECT MAX(id) AS max FROM tr_user;");
+  $pdo->commit();
+  /* cookiepassの発行 */
+  setCookiePass($stGet->fetch()['max']);
+
+}
+
 /* Set new cookiepass to this terminal */
 function setCookiePass($userid){
   require_once('../assets/util/util.php');
@@ -26,18 +44,18 @@ function setCookiePass($userid){
   /* トランザクション開始 */
   $pdo->beginTransaction();
   /* 現在設定されているcookiepassのidを取得 */
-  $st = $pdo->prepare("SELECT id FROM cookiepass WHERE userid = :userid AND valid = 1 ORDER BY date");
+  $st = $pdo->prepare("SELECT id FROM tr_cookiepass WHERE userid = :userid AND valid = 1 ORDER BY date");
   $st->bindValue(':userid', $userid, PDO::PARAM_INT);
   $st->execute();
   $rec = $st->fetchall();
   /* 設定数以上なら最も古いものをinvalidする。 */
   if(count($rec) >= $_conf['cookie_max']){
-    $stInvalid = $pdo->prepare("UPDATE cookiepass SET valid = 0 WHERE id =:oldid");
+    $stInvalid = $pdo->prepare("UPDATE tr_cookiepass SET valid = 0 WHERE id =:oldid");
     $stInvalid->bindValue(':oldid', $rec[0]['id'], PDO::PARAM_INT);
     $stInvalid->execute();
   }
   /* 新しいものを登録 */
-  $st = $pdo->prepare("INSERT INTO cookiepass (userid, termid, pass, valid, date) VALUES(:userid, :termid, :pass, :valid, :date);");
+  $st = $pdo->prepare("INSERT INTO tr_cookiepass (userid, termid, pass, valid, date) VALUES(:userid, :termid, :pass, :valid, :date);");
   $st->bindValue(':userid', $userid);
   $st->bindValue(':termid', $termid);
   $st->bindValue(':pass', $hash);
@@ -47,10 +65,40 @@ function setCookiePass($userid){
   $pdo->commit();
 }
 
+function login(){
+  global $pdo;
+  global $_USER;
+  $pdo->beginTransaction();
+  $st = $pdo->prepare("SELECT id,userid,pass FROM tr_cookiepass WHERE termid = :termid");
+  $st->execute(array(':termid'=>$_COOKIE['termid']));
+  while(true){
+    $rec = $st->fetch();
+    if($rec === false){
+      break;
+    }
+    if(password_verify($_COOKIE['password'],$rec['pass'])){
+      // ログイン処理
+      // ユーザー情報を$_USERに入れる
+      $st = $pdo->prepare("SELECT * FROM tr_user WHERE id = :id");
+      $st->execute(array(':id'=>$rec['userid']));
+      $_USER = $st->fetch();
+      //日付を更新
+      $stUpdate = $pdo->prepare("UPDATE tr_cookiepass SET date = :date WHERE id = :id");
+      $stUpdate->bindValue(':date', date("Y-m-d H:i:s"));
+      $stUpdate->bindValue(':id', $rec['id'], PDO::PARAM_INT);
+      $stUpdate->execute();
+      $pdo->commit();
+      return true;
+    }
+  }
+  $pdo->commit();
+  return false;
+}
+
 /* Check user password (Return false if userpass isnt exist) */
 function userpassIsCollect($_id, $_pass){
   global $pdo;
-  $st = $pdo->prepare("SELECT userpass FROM user WHERE id = ':id';");
+  $st = $pdo->prepare("SELECT tr_userpass FROM user WHERE id = ':id';");
   $st->execute(array(':id'=>$_id));
   $hash = $st->fetch()['userpass'];
   return $hash == null | password_verify($_pass, $hash);
@@ -60,7 +108,7 @@ function userpassIsCollect($_id, $_pass){
 function checkReissueUrl($_dir){
   global $pdo;
   global $_conf;
-  $st = $pdo->prepare("SELECT userid FROM reissue ".
+  $st = $pdo->prepare("SELECT tr_userid FROM reissue ".
     "WHERE url = :url AND valid = 1 AND date >= :date LIMIT 1");
   $st->bindValue(':url', $_dir);
   $st->bindValue(':date', date("Y-m-d H:i:s", strtotime($_conf['reissue_timelimit'])));
@@ -75,7 +123,7 @@ function languages(){
   global $pdo;
   global $_languages;
   if($_languages == null){
-  $st = $pdo->query("SELECT * FROM language");
+  $st = $pdo->query("SELECT * FROM mt_language");
     $_languages = $st->fetchall();
   }
   return $_languages;
@@ -86,7 +134,7 @@ function getQuestion($_id){
   global $pdo;
   $st = $pdo->prepare(
     "SELECT question.content as q"
-    ." FROM answer"
+    ." FROM tr_answer"
     ." JOIN question ON answer.questionid = question.id"
     ." WHERE answer.id = :id LIMIT 1");
   $st->bindValue(':id', $_id, PDO::PARAM_INT);
@@ -101,7 +149,7 @@ function getQuestion($_id){
 /* Get content */
 function getContentFromData($_type, $_id){
   global $pdo;
-  $table = ($_type == "c") ? "comment" :( ($_type == "a") ? "answer" : "question");
+  $table = ($_type == "c") ? "tr_comment" :( ($_type == "a") ? "tr_answer" : "tr_question");
   $st = $pdo->prepare("SELECT content FROM $table WHERE id = :id");
   $st->bindValue(':id', $_id, PDO::PARAM_INT);
   $st->execute();
@@ -109,6 +157,19 @@ function getContentFromData($_type, $_id){
     return FALSE;
   }
   return $rec['content'];
+}
+
+/* Set form token to db */
+function setToken($user, $token){
+  global $pdo;
+  $st = $pdo->prepare(
+    "INSERT INTO tr_token(token, userid, valid, date)"
+    . " VALUES(:token, :userid, :valid, :date);");
+  $st->bindValue(':token', $token);
+  $st->bindValue(':userid', $user, PDO::PARAM_INT);
+  $st->bindValue(':valid', 1, PDO::PARAM_INT);
+  $st->bindValue(':date', date("Y-m-d H:i:s"));
+  $st->execute();
 }
 
 /* If it's unauthorized access, head to home */
@@ -119,7 +180,7 @@ function checkToken(){
   if(isset($_POST['token']) ? isInput($_POST['token']) : false){
     $pdo->beginTransaction();
     $st = $pdo->prepare(
-      "SELECT id FROM token"
+      "SELECT id FROM tr_token"
       ." WHERE token = :token"
       ." AND userid = :userid"
       ." AND valid = 1"
@@ -134,7 +195,7 @@ function checkToken(){
     $rec = $st->fetch();
     if($rec !== FALSE){
       //無効にする
-      $stInvalid = $pdo->prepare("UPDATE token SET valid = :valid WHERE id =:id;");
+      $stInvalid = $pdo->prepare("UPDATE tr_token SET valid = :valid WHERE id =:id;");
       $stInvalid->bindValue(':valid', 0, PDO::PARAM_INT);
       $stInvalid->bindValue(':id', $rec['id'], PDO::PARAM_INT);
       $stInvalid->execute();

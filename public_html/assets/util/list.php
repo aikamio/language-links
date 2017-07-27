@@ -52,7 +52,7 @@ if(get_included_files()[0] === __FILE__) {
    配列 $_result に格納する。
    */
 
-//$_this(現在テーブル)が正規か
+//$_this(現在テーブル)が正規か (プレフィックスなし)
 if(!preg_match("/^(question|answer|comment)$/", $_this)){
   errorAnn("Current table was wrong.");
   return;
@@ -101,8 +101,8 @@ if(!preg_match("/^[tcpamsnoru,]*$/",$checkpath) |
 }
 
 //各句初期化
-$select = "SELECT $_this.id, $_this.content";
-$from = " FROM $_this";
+$select = "SELECT tr_$_this.id, tr_$_this.content";
+$from = " FROM tr_$_this";
 $order = "";
 
 //バインドパラメータ
@@ -113,24 +113,24 @@ if(have($_GET['data'], "u") & isset($child)){  //未読の子供の数
   $select .= ", unread";
   $from .= " LEFT JOIN ("
       ." SELECT COUNT(id) AS unread, {$_this}id"
-      ." FROM $child"
+      ." FROM tr_$child"
       ." WHERE true"
       ." GROUP BY {$_this}id"
-    .") AS unreadcount ON unreadcount.{$_this}id = $_this.id";
+    .") AS unreadcount ON unreadcount.{$_this}id = tr_$_this.id";
 }
 if(have($_GET['data'], "c") & $_this == "answer"){  //評価と最も古いコメント
-  $select .= ", answer.commend, oldest";
+  $select .= ", tr_answer.commend, oldest";
   $from .= " LEFT JOIN ("
       ." SELECT content AS oldest, answerid"
-      ." FROM comment AS cmt1"
+      ." FROM tr_comment AS cmt1"
       ." JOIN ("
-        ."SELECT MIN(id) AS minid FROM comment GROUP BY answerid"
+        ."SELECT MIN(id) AS minid FROM tr_comment GROUP BY answerid"
       .") AS cmt2 ON cmt1.id = minid"
-    .") AS cmt3 ON cmt3.answerid = answer.id";
+    .") AS cmt3 ON cmt3.answerid = tr_answer.id";
 }
 if(have($_GET['data'], "n")){  //投稿者の名前
   $select .= ", name";
-  $from .= " JOIN user ON $_this.userid = user.id";
+  $from .= " JOIN tr_user ON $_this.userid = tr_user.id";
 }
 
 //where文,order文 (JOIN, ORDER)
@@ -143,9 +143,9 @@ foreach(['where', 'order'] as $sentence){
     $target = have($short,"p")? $parent :( have($short,"c")? $child : $_this );
     $from .=
       " " . (($sentence == 'order')? "LEFT" : "" ) . " JOIN ("
-        ." SELECT * FROM $target AS target$k JOIN ("
+        ." SELECT * FROM tr_$target AS target$k JOIN ("
           ." SELECT ".( have($short,"o")? "MIN(id)" : "MAX(id)" )
-          ." AS compareValue$k FROM $target"
+          ." AS compareValue$k FROM tr_$target"
           ." WHERE ";
     if(have($short,"m")){
       $from .= "userid = :userid";
@@ -163,9 +163,9 @@ foreach(['where', 'order'] as $sentence){
           .( have($short,"c")? $_this."id" : "id" )
         .") AS compare$k ON target$k.id = compare$k.compareValue$k"
       .") AS table$k ON "
-      .( have($short,"c")? "$_this.id = table$k.{$_this}id" :
+      .( have($short,"c")? "tr_$_this.id = table$k.{$_this}id" :
         ( have($short,"p")? "$_this.{$parent}id = table$k.id" :
-        "$_this.id = table$k.id" ));
+        "tr_$_this.id = table$k.id" ));
     if($sentence == 'order'){
       $order .= (($i == 0)? " ORDER BY " : " , ")
         . " compareValue$k IS NULL ASC , compareValue$k "
@@ -194,11 +194,11 @@ if($listnum >= 0){
 //言語 (WHERE)
 if(preg_match("/^[0-9]*$/", $_GET['language'])){
   if($_GET['language'] < count(languages())){
-    $from .= " WHERE question.language = :language";
+    $from .= " WHERE tr_question.language = :language";
     $bindparam[':language'] = (int)$_GET['language'];
   }
 }else if("l" == $_GET['language']){
-  $from .= " WHERE question.language IN(-1";
+  $from .= " WHERE tr_question.language IN(-1";
   $i=0;
   foreach(explode(",",$_USER['mothertongue']) as $lang){
     $select .= " ,:lang$i";

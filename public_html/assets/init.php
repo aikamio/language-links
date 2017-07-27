@@ -27,38 +27,8 @@ session_start();
 
   $_SESSION['url'] .. submit.phpに呼び出し元を渡すために使用(/resetで使用) */
 
-// cookieを調べてログイン処理
-if(isset($_COOKIE['termid']) & isset($_COOKIE['password'])){
-  $pdo->beginTransaction();
-  $st = $pdo->prepare("SELECT id,userid,pass FROM cookiepass WHERE termid = :termid");
-  $st->execute(array(':termid'=>$_COOKIE['termid']));
-  while(true){
-    $rec = $st->fetch();
-    if($rec === false){
-      break;
-    }
-    if(password_verify($_COOKIE['password'],$rec['pass'])){
-      // ログイン処理
-      // ユーザー情報を$_USERに入れる
-      $st = $pdo->prepare("SELECT * FROM user WHERE id = :id");
-      $st->execute(array(':id'=>$rec['userid']));
-      $_USER = $st->fetch();
-      $_login = true;
-      //日付を更新
-      $stUpdate = $pdo->prepare("UPDATE cookiepass SET date = :date WHERE id = :id");
-      $stUpdate->bindValue(':date', date("Y-m-d H:i:s"));
-      $stUpdate->bindValue(':id', $rec['id'], PDO::PARAM_INT);
-      $stUpdate->execute();
-      $pdo->commit();
-      return;
-    }
-  }
-  $pdo->commit();
-}
-
-// 非ログイン処理
-$_login = false;
-if($_anonymous){
+// ログイン処理
+if(($_login = login()) | ( isset($_anonymous) ? $_anonymous : false )){
   return;
 }
 header ("Location:/newuser");

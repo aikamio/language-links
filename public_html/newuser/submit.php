@@ -40,19 +40,7 @@ if(preg_match("/[^-0-9]+/", $_POST['mother']) | $_POST['mother']==""){
 }
 
 /* データベースに登録 */
-$pdo->beginTransaction();
-$st = $pdo->prepare(
-  "INSERT INTO user(name, learning, mothertongue)"
-  . " VALUES(:name, :learning, :mothertongue);");
-$st->bindValue(':name', $_POST['name']);
-$st->bindValue(':learning', $learn);
-$st->bindValue(':mothertongue', (int)$_POST['mother'], PDO::PARAM_INT);
-$st->execute();
-$stGet = $pdo->query("SELECT MAX(id) AS max FROM user;");
-$pdo->commit();
-
-/* cookiepassの発行 */
-setCookiePass($stGet->fetch()['max']);
+makeNewUser($_POST['name'], $learn, (int)$_POST['mother']);
 
 /* ホーム画面に遷移 */
 header("Location: /");
