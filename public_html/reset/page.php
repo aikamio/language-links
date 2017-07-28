@@ -10,7 +10,7 @@ $rightdir = $_SERVER['DOCUMENT_ROOT']."/reset/";
 $pos = strpos($current, $rightdir);
 $len = strlen($rightdir);
 $pos_after = strpos($current, "/", $len);
-if($pos != 0 | $pos_after == -1){
+if($pos != 0 || $pos_after == -1){
   header("Location: /reset");
   exit;
 }
@@ -29,11 +29,11 @@ $_SESSION['url'] = $dir;
 <form>
   <p><span class='q'>
     Maill address</span>
-    <input type='email' name='mail' max='64' required>
+    <input type='email' name='mail' max='64' required required data-regex="^(:mail)$">
   </p>
   <p>
     <span class='q'>New password</span>
-    <input type='password' name='pass' max='30' required>
+    <input type='password' name='pass' max='30' required required data-regex="^[0-9a-zA-Z]{4,}$">
   </p>
   <p>
     <span class='q'>Confirm password</span>

@@ -52,6 +52,11 @@ function isInput($_data){
   return preg_match("/\S/", $_data);
 }
 
+/* Check it is integer string */
+function isInt($_data){
+  return preg_match("/^[0-9]+$/", $_data);
+}
+
 /* Error announce */
 function errorAnn($_text){
   $_SESSION['announce']['type'] = "error";
@@ -109,7 +114,7 @@ function dimArraySearch($_list, $_key, $_value){
   return $array;
 }
 
-/* 文字が含まれる 複数指定化 */
+/* 文字が含まれる 複数指定化（OR検索） */
 function have(){
   $_str = func_get_args()[0];
   $_keys = array_slice(func_get_args(), 1);
@@ -119,4 +124,9 @@ function have(){
     }
   }
   return false;
+}
+
+/* 出力エスケープ */
+function html($str){
+  return htmlspecialchars($str);
 }

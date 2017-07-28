@@ -6,7 +6,7 @@ require "../assets/util/view.php";
 /* 本文 */
 ?>
 <form>
-  <p><span class='q'>Name</span><input type='text' name='name' required></p>
+  <p><span class='q'>Name</span><input type='text' name='name'></p>
   <p class='q'>Which language do you want to learn?</p><p>
   <?php
     $list = languages();
@@ -14,7 +14,7 @@ require "../assets/util/view.php";
   ?>
   </p><p class='q'>What is your mother tongue?</p><p>
   <?php
-    array_push($list, array('id'=>'-1', 'name'=>'Any', 'on'=>true));
+    array_push($list, array('id'=>'-1', 'name'=>'Other', 'on'=>true));
     radios($list, "mother", ":id", true, ":name");
   ?>
   </p>

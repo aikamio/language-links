@@ -7,7 +7,7 @@ require "../assets/util/view.php";
 ?>
 <form>
   <p><span class='q'>Maill address</span><input type='email' name='mail' max='64' required></p>
-  <input type='submit' value='Send mail' id='submit'>
+  <input type='submit' value='Send mail' id='submit' required data-regex='^(:mail)$'>
   <div class='formfoot'>
     <a href='/login'>Back to login</a>
   </div>

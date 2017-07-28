@@ -7,7 +7,7 @@
   <p>
     <span class='q'>Name</span>
     <input type='text' name='name' <?php
-      echo "value='".$_USER['name']."'";
+      echo "value='".html($_USER['name'])."'";
     ?>>
   </p>
   <p>
@@ -33,11 +33,11 @@
   </p>
   <p>
     <span class='q'>Mailaddress</span>
-    <input type='email' name='mail'<?php
+    <input type='text' name='mail'<?php
       if(isset($_USER['mail'])){
-        echo " value='".$_USER['mail']."'";
+        echo " value='".html($_USER['mail'])."'";
       }
-    ?>>
+    ?> data-regex="^(:mail)$">
   </p>
   <p>
     <span class='q'>Password</span>

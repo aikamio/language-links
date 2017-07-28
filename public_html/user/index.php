@@ -10,7 +10,7 @@ $_page = "user";
   <?php
     $list = languages();
     foreach(explode(",", $_USER['learning']) as $langid){
-      echo "<p>".$list[$langid]['name'];
+      echo "<p>".html($list[$langid]['name']);
       echo " <span class='langlv'>LV<span class='langnum'>5</span></span></p>";
     }
   ?>
@@ -22,9 +22,9 @@ $_page = "user";
     $_this = "answer";
     require "../assets/util/list.php";
     if(count($_result) >= 1){
-      echo "<a href='/answers/?where=s&data=cn&page=".$_result[0]['id']."'><p>"
-        . $_result[0]['content']
-        . "<span class='new'>New:" . $_result[0]['unread'] . "</span>"
+      echo "<a href='/answers/?where=s&data=cn&page=".html($_result[0]['id'])."'><p>"
+        . html($_result[0]['content'])
+        . "<span class='new'>New:" . html($_result[0]['unread']) . "</span>"
         . "</p></a>";
       if(count($_result) >= 2){
         echo "<p class='more'><a href='/questions/?where=m&order=cu&list=100'>And more</a></p>";
@@ -39,9 +39,9 @@ $_page = "user";
     $_this = "answer";
     require "../assets/util/list.php";
     foreach($_result as $rec){
-      echo "<a href='/detail/?page=".$_rec['id']."'><p>"
-        . $_rec['content']
-        . "<span class='comment'>←" . $_rec['oldest'] . "</span>"
+      echo "<a href='/detail/?page=".html($_rec['id'])."'><p>"
+        . html($_rec['content'])
+        . "<span class='comment'>←" . html($_rec['oldest']) . "</span>"
         . "</p></a>";
     }
   ?>

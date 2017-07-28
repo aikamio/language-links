@@ -7,7 +7,7 @@ require "../assets/util/view.php";
 ?>
 <form>
   <p><span class='q'>Name or maill address</span><input type='text' name='name' max='30' required></p>
-  <p><span class='q'>Password</span><input type='password' name='pass' max='30' required></p>
+  <p><span class='q'>Password</span><input type='password' name='pass' max='30' required data-regex='^[0-9a-zA-Z]+$'></p>
   <input type='submit' value='Login' id='submit'>
   <div class='formfoot'>
     <a href='/forgot'>Forgot Password</a>

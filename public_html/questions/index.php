@@ -13,8 +13,8 @@ if(isset($_GET['where']) ? !have($_GET['where'],"m","s") : true){
   echo "<h1>All questions</h1>";
 }
 foreach($_result as $rec){
-  echo "<a href='/answers/?where=s&data=cn&page=".$rec['id']."'>"
-    ."<p class='line'>" . $rec['content'] . "</p></a>";
+  echo "<a href='/answers/?where=s&data=cn&page=".html($rec['id'])."'>"
+    ."<p class='line'>" . html($rec['content']) . "</p></a>";
 }
 
 getContent();

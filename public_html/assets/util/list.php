@@ -87,13 +87,13 @@ if($ar[$_this] <= 1){
 
 //データチェック
 $checkpath = $_GET['where'].$_GET['order'];
-if(!preg_match("/^[tcpamsnoru,]*$/",$checkpath) |
-    (!isset($parent) & have($checkpath, "p")) |
-    (!isset($child) & have($checkpath, "c")) |
-    !preg_match("/^(-1|[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*)$/", $_GET['list']) |
-    !preg_match("/^(-1|[0-9]*|l)$/", $_GET['language']) |
-    (have($checkpath, "s") &
-      (isset($_GET['page']) ? !preg_match("/^([0-9]*)$/", $_GET['page']) : true )) |
+if(!preg_match("/^[tcpamsnoru,]*$/",$checkpath) ||
+    (!isset($parent) && have($checkpath, "p")) ||
+    (!isset($child) && have($checkpath, "c")) ||
+    !preg_match("/^(-1|[1-9][0-9]*|[1-9][0-9]*-[1-9][0-9]*)$/", $_GET['list']) ||
+    !preg_match("/^(-1|[0-9]*|l)$/", $_GET['language']) ||
+    (have($checkpath, "s") &&
+      (isset($_GET['page']) ? !preg_match("/^([0-9]*)$/", $_GET['page']) : true )) ||
     !preg_match("/^[ucn]*$/", $_GET['data'])){
   sessionReset($_page);
   errorAnn("Incorrect query input.");
@@ -109,7 +109,7 @@ $order = "";
 $bindparam = [];
 
 //取得するデータ (SELECT, JOIN)
-if(have($_GET['data'], "u") & isset($child)){  //未読の子供の数
+if(have($_GET['data'], "u") && isset($child)){  //未読の子供の数
   $select .= ", unread";
   $from .= " LEFT JOIN ("
       ." SELECT COUNT(id) AS unread, {$_this}id"
@@ -118,7 +118,7 @@ if(have($_GET['data'], "u") & isset($child)){  //未読の子供の数
       ." GROUP BY {$_this}id"
     .") AS unreadcount ON unreadcount.{$_this}id = tr_$_this.id";
 }
-if(have($_GET['data'], "c") & $_this == "answer"){  //評価と最も古いコメント
+if(have($_GET['data'], "c") && $_this == "answer"){  //評価と最も古いコメント
   $select .= ", tr_answer.commend, oldest";
   $from .= " LEFT JOIN ("
       ." SELECT content AS oldest, answerid"
@@ -164,7 +164,7 @@ foreach(['where', 'order'] as $sentence){
         .") AS compare$k ON target$k.id = compare$k.compareValue$k"
       .") AS table$k ON "
       .( have($short,"c")? "tr_$_this.id = table$k.{$_this}id" :
-        ( have($short,"p")? "$_this.{$parent}id = table$k.id" :
+        ( have($short,"p")? "tr_$_this.{$parent}id = table$k.id" :
         "tr_$_this.id = table$k.id" ));
     if($sentence == 'order'){
       $order .= (($i == 0)? " ORDER BY " : " , ")

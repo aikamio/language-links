@@ -28,7 +28,7 @@ if($learn != ""){
   $_USER['learning'] = $learn;
 }
 
-if(!preg_match("/[^-0-9]+/", $_POST['mother']) & $_POST['mother']!=""){
+if(!preg_match("/[^-0-9]+/", $_POST['mother']) && $_POST['mother']!=""){
   $_USER['mothertongue'] = (int)$_POST['mother'];
 }
 
@@ -36,7 +36,7 @@ if(isInput($_POST['mail'])){
   $_USER['mail'] = $_POST['mail'];
 }
 
-if(isInput($_POST['password']) & $_POST['password'] === $_POST['confirm']){
+if(isInput($_POST['password']) && $_POST['password'] === $_POST['confirm']){
   $_USER['userpass'] = getHash($_POST['password']);
 }
 

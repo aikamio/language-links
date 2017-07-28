@@ -1,21 +1,24 @@
 
 /* フォーム送信前の確認 */
 function registercheck(form){
+  console.log('test start');
   /* submitボタンを押せなくする(時短のため後ろから検索) */
   submitAble(form, false);
 
   try{
-    /* チェックボックスの必須確認 */
     var requires = [];
-    for(var i=0;i<form.length;i++){
+    var pass = null;
+    for(var i=form.length-1;i>=0;i--){
+      /* チェックボックスの必須確認 */
       var input = form[i];
+      var type = input.type;
       var requiredValue = input.getAttributeNode("required-value");
-      if(input.type == "checkbox" & requiredValue != null){
+      if(type == "checkbox" && requiredValue != null){
         var key = requiredValue.value;
         var flag = false;
         for(var j=0;j<requires.length;j++){
           if(requires[j]['key'] == key){
-            if(!requires[j]['input'] & input.checked){
+            if(!requires[j]['input'] && input.checked){
               requires[j]['input'] = true;
             }
             flag = true;
@@ -26,24 +29,25 @@ function registercheck(form){
           requires.push({'key':key, 'input':input.checked});
         }
       }
-    }
-    for(var i=0;i<requires.length;i++){
-      if(!requires[i]['input']){
-         throw new Error(requires[i]['key'] + " is required.");
+      /* バリデーションチェック
+         対象：text, password
+         空欄は対象外 */
+      if(( type == "text" || type == "password" || type=="email" )&&
+         ( input.value.length > 0 )&& input.dataset.regex){
+        if(!input.value.match(
+            new RegExp(
+              input.dataset.regex.replace(
+                /\(:mail\)/, "[a-zA-Z0-9\\.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*" )))){
+          throw new Error(input.name + " is invalid.");
+        }
       }
-    }
-
-    /* パスワードの確認の一致
-       confirmクラスの1つ前のpassword欄をパスワードと解釈する */
-    var pass = null;
-    for(var i=form.length-1;i>=0;i--){
-      var input = form[i];
-      if(input.type == "password"){
+      /* パスワードの確認の一致
+         confirmクラスの1つ前のpassword欄をパスワードと解釈する
+         上位のfor文でお尻から検索することに注意 */
+      if(type == "password"){
         if(haveClass(input, "confirm")){
-          if(isInput(input.value)){
-            pass = input.value;
-          }
-        }else if(pass != null){
+          pass = input.value;
+        }else if(pass != null){  //nullと""を区別しなければいけないことに注意
           if(pass == input.value){
             pass = null;
           }else{
@@ -52,8 +56,14 @@ function registercheck(form){
         }
       }
     }
+    /* チェックボックスの必須確認結果 */
+    for(var i=0;i<requires.length;i++){
+      if(!requires[i]['input']){
+         throw new Error(requires[i]['key'] + " is required.");
+      }
+    }
   }catch(e){
-    //alert(e);
+    alert(e.message);
     submitAble(form, true);
     return false;
   }

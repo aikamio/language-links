@@ -66,6 +66,9 @@ function setCookiePass($userid){
 }
 
 function login(){
+  if(!isset($_COOKIE['termid']) || !isset($_COOKIE['password'])){
+    return false;
+  }
   global $pdo;
   global $_USER;
   $pdo->beginTransaction();
@@ -76,7 +79,7 @@ function login(){
     if($rec === false){
       break;
     }
-    if(password_verify($_COOKIE['password'],$rec['pass'])){
+    if(password_verify($_COOKIE['password'], $rec['pass'])){
       // ログイン処理
       // ユーザー情報を$_USERに入れる
       $st = $pdo->prepare("SELECT * FROM tr_user WHERE id = :id");
@@ -101,7 +104,7 @@ function userpassIsCollect($_id, $_pass){
   $st = $pdo->prepare("SELECT tr_userpass FROM user WHERE id = ':id';");
   $st->execute(array(':id'=>$_id));
   $hash = $st->fetch()['userpass'];
-  return $hash == null | password_verify($_pass, $hash);
+  return $hash == null || password_verify($_pass, $hash);
 }
 
 /* Check Re-issue Url */
@@ -133,10 +136,10 @@ function languages(){
 function getQuestion($_id){
   global $pdo;
   $st = $pdo->prepare(
-    "SELECT question.content as q"
+    "SELECT tr_question.content as q"
     ." FROM tr_answer"
-    ." JOIN question ON answer.questionid = question.id"
-    ." WHERE answer.id = :id LIMIT 1");
+    ." JOIN tr_question ON tr_answer.questionid = tr_question.id"
+    ." WHERE tr_answer.id = :id LIMIT 1");
   $st->bindValue(':id', $_id, PDO::PARAM_INT);
   $st->execute();
   $rec = $st->fetch();
@@ -210,4 +213,14 @@ function checkToken(){
   errorAnn("Unauthorized access.");
   header("Location: ..");
   exit;
+}
+
+/* Get question for title */
+function getQuestionContent($page){
+  global $pdo;
+  $st = $pdo->prepare("SELECT content FROM tr_question WHERE id = :id LIMIT 1");
+  $st->bindValue(':id', $page, PDO::PARAM_INT);
+  $st->execute();
+  $result = $st->fetch();
+  return ($result !== false) ? $result['content'] : false;
 }

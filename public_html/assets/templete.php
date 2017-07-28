@@ -31,7 +31,7 @@
     //トークンの発行
     $token = makeRandStr(30);
     $_content = substr($_content, 0, $pos)." action='".$_action."'".
-      " class='formbox' onsubmit='return registercheck(document.register);'".
+      " class='formbox' onsubmit='return registercheck(form)'".
       " method='post' id='form'>".
       "<input type='hidden' value='$token' name='token'>".
       substr($_content, $pos + strlen(">"));
@@ -62,10 +62,10 @@
       <div class="fluffyinner">
         <div class="innerbody">
           <?php
-            if(isset($_SESSION['announce']['text']) & isset($_SESSION['announce']['page'])){
-              if($_SESSION['announce']['text'] != "" & $_SESSION['announce']['page'] == $_page){
-                echo "<div class='announce ".$_SESSION['announce']['type']."'>".
-                  "<p>".$_SESSION['announce']['text']."</p></div>";
+            if(isset($_SESSION['announce']['text']) && isset($_SESSION['announce']['page'])){
+              if($_SESSION['announce']['text'] != "" && $_SESSION['announce']['page'] == $_page){
+                echo "<div class='announce ".html($_SESSION['announce']['type'])."'>".
+                  "<p>".html($_SESSION['announce']['text'])."</p></div>";
                 $_SESSION['announce']['text'] = "";
               }
             }

@@ -19,21 +19,21 @@ if($rec === FALSE){
 
 //本文
 ?>
-<h1><?php echo $rec['q']; ?></h1>
-<h3><?php echo $rec['a']; ?></h3>
-<p><?php echo $rec['name']; ?></p>
+<h1><?php echo html($rec['q']); ?></h1>
+<h3><?php echo html($rec['a']); ?></h3>
+<p><?php echo html($rec['name']); ?></p>
 <form>
   <div class="box">
     <label>
-      <input type='radio' name='commend' value='0'>
+      <input type='radio' name='commend' value='0' required>
       <img src="/assets/img/commend0.png">Close.
     </label>
     <label>
-      <input type='radio' name='commend' value='1'>
+      <input type='radio' name='commend' value='1' required>
       <img src="/assets/img/commend1.png">Good.
     </label>
     <label>
-      <input type='radio' name='commend' value='2'>
+      <input type='radio' name='commend' value='2' required>
       <img src="/assets/img/commend2.png">Marvelous.
     </label>
   </div>
@@ -51,7 +51,7 @@ require "../assets/util/list.php";
 if($_result !== FALSE){
   $i = 0;
   foreach($_result as $rec){
-    echo "<p class='comment'><span>" . $rec['content'] . "</span>" . $rec['name'] . "</p>";
+    echo "<p class='comment'><span>" . html($rec['content']) . "</span>" . html($rec['name']) . "</p>";
   }
 }
 

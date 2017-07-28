@@ -28,7 +28,7 @@ session_start();
   $_SESSION['url'] .. submit.phpに呼び出し元を渡すために使用(/resetで使用) */
 
 // ログイン処理
-if(($_login = login()) | ( isset($_anonymous) ? $_anonymous : false )){
+if(($_login = login()) || ( isset($_anonymous) ? $_anonymous : false )){
   return;
 }
 header ("Location:/newuser");

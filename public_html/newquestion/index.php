@@ -5,7 +5,7 @@
 ?>
 <h2>Make Q&amp;A</h2>
 <form>
-  <textarea name="content"></textarea>
+  <textarea name="content" required></textarea>
   <p class="q">Language</p>
   <p>
     <?php

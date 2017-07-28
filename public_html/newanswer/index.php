@@ -10,9 +10,9 @@ if($q === FALSE){
 }
 
 ?>
-<h1><?php echo $q; ?></h1>
+<h1><?php echo html($q); ?></h1>
 <form>
-  <textarea name="content"></textarea>
+  <textarea name="content" required></textarea>
   <input type='submit' value='OK.' class='formbutton'>
 </form>
 <?php
